@@ -1,24 +1,30 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 export const cartSlice = createSlice({
-  name: '@cart',
+  name: 'cart',
   initialState: {
-    cart: [],
+    carts: [],
   },
 
   reducers: {
-    addProduct: (state, action) => {
-      console.log("ON REMOVE REDUCER FROM CART SLICE");
-      console.log(`Action: ${action}`);
+    addProductToCart: (state, action) => {
+      console.log("ON ADDTOCART REDUCER FROM CART SLICE");
+      console.log('Action');
+      console.log(action);
+
+      const product = action.payload;
+
       // verifica se produto já está no carrinho (e caso existe, já pega seu índice)
-      const productIndex = state.cart.findIndex(
-        (p) => p.id === action.product.id
-      );
+      const productIndex = state.carts.findIndex((p) => p.id === product.id);
 
       if (productIndex >= 0) {
-        state.cart[productIndex].amount += 1;
+        state.carts[productIndex].amount += 1;
       } else {
-        state.cart.push(action.product);
+        const data = {
+          ...product,
+          amount: 1,
+        };
+        state.carts.push(data);
       }
     },
 
@@ -28,12 +34,25 @@ export const cartSlice = createSlice({
     },
 
     updateAmount: (state, action) => {
-      console.log("ON REMOVE REDUCER FROM CART SLICE");
+      console.log("ON UPDATE REDUCER FROM CART SLICE");
       console.log(`Action: ${action}`);
     },
   },
 });
 
-export const { addProduct, removeProduct, updateAmount } = cartSlice.actions;
+export const selectAmount = (state) => {
+  const amountResult = [];
+  state.cart.carts.forEach((cart) => {
+    amountResult[cart.id] = cart.amount;
+  });
+
+  return amountResult;
+};
+
+export const {
+  addProductToCart,
+  removeProduct,
+  updateAmount,
+} = cartSlice.actions;
 
 export default cartSlice.reducer;

@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { MdAddShoppingCart } from 'react-icons/md';
-
+import { useSelector, useDispatch } from 'react-redux';
+import { addProductToCart, selectAmount } from '../../store/reducers/cartSlice';
 import { formatPrice } from '../../utils/format';
 import { ProductList } from './styles';
 import api from '../../services/api';
 
 function Home() {
   const [products, setProducts] = useState([]);
-  const [amount, setAmount] = useState([]);
+  const dispatch = useDispatch();
+  const amounts = useSelector(selectAmount);
 
   useEffect(() => {
     async function loadProducts() {
@@ -22,10 +24,8 @@ function Home() {
     loadProducts();
   }, []);
 
-  function handleCartChange(id) {
-    // dispatch(CartActions.addToCartRequest(id));
-    // Em teoria seria assim com o bindActionCreators
-    // addToCart()
+  function handleCartChange(product) {
+    dispatch(addProductToCart(product));
   }
 
   return (
@@ -36,10 +36,11 @@ function Home() {
           <strong>{product.title}</strong>
           <span>{product.formattedPrice}</span>
 
-          <button type="button" onClick={() => handleCartChange(product.id)}>
+          <button type="button" onClick={() => handleCartChange(product)}>
             <div>
               <MdAddShoppingCart size={16} color="#FFF" /> {''}
-              {amount[product.id] || 0}
+              {amounts[product.id]}
+              {/* {amount[product.id] || 0} */}
             </div>
 
             <span>ADICIONAR AO CARRINHO</span>
