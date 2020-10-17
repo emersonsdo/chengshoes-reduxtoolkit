@@ -8,10 +8,6 @@ export const cartSlice = createSlice({
 
   reducers: {
     addProductToCart: (state, action) => {
-      console.log("ON ADDTOCART REDUCER FROM CART SLICE");
-      console.log('Action');
-      console.log(action);
-
       const product = action.payload;
 
       // verifica se produto já está no carrinho (e caso existe, já pega seu índice)
@@ -19,23 +15,47 @@ export const cartSlice = createSlice({
 
       if (productIndex >= 0) {
         state.carts[productIndex].amount += 1;
+        state.carts[productIndex].subtotal =
+          state.carts[productIndex].price * state.carts[productIndex].amount;
       } else {
         const data = {
           ...product,
           amount: 1,
+          subtotal: product.price * 1,
         };
         state.carts.push(data);
       }
     },
 
-    removeProduct: (state, action) => {
-      console.log("ON REMOVE REDUCER FROM CART SLICE");
-      console.log(`Action: ${action}`);
+    decreaseAmount: (state, action) => {
+      const productId = action.payload;
+      const productIndex = state.carts.findIndex((p) => p.id === productId);
+
+      if (productIndex >= 0 && state.carts[productIndex].amount > 0) {
+        state.carts[productIndex].amount -= 1;
+        state.carts[productIndex].subtotal =
+          state.carts[productIndex].price * state.carts[productIndex].amount;
+      }
     },
 
     updateAmount: (state, action) => {
-      console.log("ON UPDATE REDUCER FROM CART SLICE");
-      console.log(`Action: ${action}`);
+      const productId = action.payload;
+      const productIndex = state.carts.findIndex((p) => p.id === productId);
+
+      if (productIndex >= 0) {
+        state.carts[productIndex].amount += 1;
+        state.carts[productIndex].subtotal =
+          state.carts[productIndex].price * state.carts[productIndex].amount;
+      }
+    },
+
+    removeProduct: (state, action) => {
+      const productId = action.payload;
+      const productIndex = state.carts.findIndex((p) => p.id === productId);
+
+      if (productIndex >= 0) {
+        state.carts.splice(productIndex, 1);
+      }
     },
   },
 });
@@ -49,10 +69,21 @@ export const selectAmount = (state) => {
   return amountResult;
 };
 
+export const selectCart = (state) => {
+  return state.cart.carts;
+};
+
+export const selectTotalBill = (state) => {
+  return state.cart.carts.reduce((total, product) => {
+    return total + product.price * product.amount;
+  }, 0);
+};
+
 export const {
   addProductToCart,
   removeProduct,
   updateAmount,
+  decreaseAmount,
 } = cartSlice.actions;
 
 export default cartSlice.reducer;
