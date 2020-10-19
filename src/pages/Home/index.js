@@ -51,15 +51,4 @@ function Home() {
   );
 }
 
-// const mapStateToProps = (state) => ({
-//   amount: state.cart.reduce((amount, product) => {
-//     amount[product.id] = product.amount;
-//     return amount;
-//   }, {}), // {} para iniciar o amount como objeto vazio
-// });
-
-// const mapDispatchToProps = (dispatch) =>
-//   bindActionCreators(CartActions, dispatch);
-
-// Primeiro parâmetro seria o mapStateToProps
-export default Home; // connect(mapStateToProps, mapDispatchToProps)(Home);
+export default Home;

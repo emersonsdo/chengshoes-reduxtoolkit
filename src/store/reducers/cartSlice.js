@@ -1,4 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
+import { toast } from 'react-toastify';
+import api from '../../services/api';
 
 export const cartSlice = createSlice({
   name: 'cart',
@@ -7,7 +9,7 @@ export const cartSlice = createSlice({
   },
 
   reducers: {
-    addProductToCart: (state, action) => {
+    addProductToCartSuccess: (state, action) => {
       const product = action.payload;
 
       // verifica se produto já está no carrinho (e caso existe, já pega seu índice)
@@ -38,7 +40,7 @@ export const cartSlice = createSlice({
       }
     },
 
-    updateAmount: (state, action) => {
+    updateAmountSuccess: (state, action) => {
       const productId = action.payload;
       const productIndex = state.carts.findIndex((p) => p.id === productId);
 
@@ -60,6 +62,65 @@ export const cartSlice = createSlice({
   },
 });
 
+export const {
+  addProductToCartSuccess,
+  updateAmountSuccess,
+  removeProduct,
+  decreaseAmount,
+} = cartSlice.actions;
+
+export const addProductToCart = (product) => {
+  return async (dispatch, getState) => {
+    try {
+      const state = getState().cart;
+      const productIndex = state.carts.findIndex((p) => p.id === product.id);
+
+      const stock = await api.get(`stock/${product.id}`);
+      const stockAmount = stock.data.amount;
+
+      const amount =
+        productIndex >= 0 ? state.carts[productIndex].amount + 1 : 1;
+
+      if (amount > stockAmount) {
+        toast.error('Estoque insuficiente');
+        return;
+      }
+
+      dispatch(addProductToCartSuccess(product));
+    } catch (err) {
+      toast.error(err);
+    }
+  };
+};
+
+export const updateAmount = (id) => {
+  return async (dispatch, getState) => {
+    try {
+      const state = getState().cart;
+      const productIndex = state.carts.findIndex((p) => p.id === id);
+
+      if (productIndex < 0) {
+        toast.error('Produto não encontrado');
+        return;
+      }
+
+      const stock = await api.get(`stock/${id}`);
+      const stockAmount = stock.data.amount;
+
+      const amount = state.carts[productIndex].amount + 1;
+
+      if (amount > stockAmount) {
+        toast.error('Estoque insuficiente');
+        return;
+      }
+
+      dispatch(updateAmountSuccess(id));
+    } catch (err) {
+      toast.error(err);
+    }
+  };
+};
+
 export const selectAmount = (state) => {
   const amountResult = [];
   state.cart.carts.forEach((cart) => {
@@ -78,12 +139,5 @@ export const selectTotalBill = (state) => {
     return total + product.price * product.amount;
   }, 0);
 };
-
-export const {
-  addProductToCart,
-  removeProduct,
-  updateAmount,
-  decreaseAmount,
-} = cartSlice.actions;
 
 export default cartSlice.reducer;
