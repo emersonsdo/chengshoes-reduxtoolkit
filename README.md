@@ -1,6 +1,6 @@
 ## Site de vendas com carrinho - com REDUX-TOOLKIT
 
-Esse projeto foi desenvolvido como uma melhoria e atualização do projeto COLOCAR AQUI O PROJETO ORIGINAL.
+Esse projeto foi desenvolvido como uma melhoria e atualização [desse projeto](https://github.com/emersonsdo/cheng-shoes).
 
 O objetivo principal foi utilizar o [Redux Toolkit](https://redux-toolkit.js.org/) para implementar o
 padrão Flux, incluindo as chamadas assíncronas.
