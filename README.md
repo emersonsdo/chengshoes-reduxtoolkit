@@ -9,7 +9,7 @@ Como resultado, a diferença de complexidade na implementação é muito signifi
 reducers quanto na utilização pelas páginas e componentes da aplicação, sendo muito mais simples e
 de fácil leitura com a utilização do Redux Toolkit.
 
-Além disso estamos iniciando nosso json-server de forma concorrente à aplicação, sendo necessário apenas um comando, com o uso do [concurrently](https://www.npmjs.com/package/concurrently).
+Além disso estamos iniciando nosso `json-server` de forma concorrente à aplicação, sendo necessário apenas um comando, com o uso do [concurrently](https://www.npmjs.com/package/concurrently).
 
 Ainda falta:
 
